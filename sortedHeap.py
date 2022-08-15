@@ -15,7 +15,7 @@ class sortedHeap(object):
 
         for x in val:
             if type(x) != type(t):
-                raise TypeError( "Expected a list of either only intergers or only strings" )
+                raise TypeError( "Expected a list of either (only) intergers or (only) strings" )
 
         # initializing class instances
         self.heap = val
@@ -144,9 +144,13 @@ class sortedHeap(object):
 
 
     def push(self, val: any) -> None:
+        '''Appends a new element to the heap'''
         if not self.heap:
             self.heap.append(val)
             return
+
+        if type(self.heap[0]) != type(val):
+            raise TypeError( "Expected an element of type {type(self.heap[0])}, instead got {type(val)}" )
 
         for i in range( self.heap.__len__() ):
             if self.heap[i] > val:
