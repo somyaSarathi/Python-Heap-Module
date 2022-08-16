@@ -9,6 +9,11 @@ class sortedHeap(object):
         if type(val) != list:
             return TypeError( f"Expected an list argument, instead got {type(val)}")
 
+        if not val:
+            self.queue = list()
+            self.__max = __max
+            return
+
         t = val[0]
         if type(t) != int and type(t) != str:
             raise TypeError( "Expected a list of integers or strings" )
@@ -18,14 +23,14 @@ class sortedHeap(object):
                 raise TypeError( "Expected a list of either (only) intergers or (only) strings" )
 
         # initializing class instances
-        self.heap = val
+        self.queue = val
         self.__max = __max
 
         if self.__max:
-            self.heap.sort(reverse=True)
+            self.queue.sort(reverse=True)
             return
 
-        self.heap.sort()
+        self.queue.sort()
         return
 
 
@@ -33,8 +38,8 @@ class sortedHeap(object):
         if type(val) == sortedHeap:
             return self.merge(val)
         
-        if type(val[0]) != type(self.heap[0]):
-            return TypeError( "Expected a list of list of {type(self.heap[0])}")
+        if type(val[0]) != type(self.queue[0]):
+            return TypeError( "Expected a list of list of {type(self.queue[0])}")
 
         val = sortedHeap(val, self.__max)
         return self.merge(val)
@@ -42,8 +47,8 @@ class sortedHeap(object):
     
     def __str__(self) -> int:
         if self.__max:
-            return f'max-heap{self.heap.__str__()}'
-        return f'min-heap{self.heap.__str__()}'
+            return f'max-heap{self.queue.__str__()}'
+        return f'min-heap{self.queue.__str__()}'
 
 
     def __repr__(self) -> int:
@@ -51,19 +56,19 @@ class sortedHeap(object):
 
 
     def __len__(self) -> int:
-        return self.heap.__len__()
+        return self.queue.__len__()
 
 
     def __bool__(self) -> bool:
-        return bool( self.heap )
+        return bool( self.queue )
     
 
     def __iter__(self) -> bool:
-        return self.heap.__iter__()
+        return self.queue.__iter__()
     
 
     def __next__(self) -> bool:
-        return self.heap.__next__()
+        return self.queue.__next__()
 
 
     def __dir__(self) -> list[str]:
@@ -71,40 +76,40 @@ class sortedHeap(object):
 
 
     def __getitem__(self, idx) -> any:
-        if idx < 0 or idx >= len( self.heap ):
+        if idx < 0 or idx >= len( self.queue ):
             raise IndexError
-        return self.heap[idx]
+        return self.queue[idx]
 
 
     def __binSearch(self, val: any) -> int:
-        if not self.heap:
+        if not self.queue:
             return -1
 
         l = r = 0
         if self.__max:
-            l = len(self.heap) - 1
+            l = len(self.queue) - 1
         else:
-            r = len(self.heap) - 1
+            r = len(self.queue) - 1
 
         def search(val, l, r) -> int:
-            if l == r and self.heap[l] != val:
+            if l == r and self.queue[l] != val:
                 return -1
             
             mid = (l+r)//2
 
-            if self.heap[mid] == val:
+            if self.queue[mid] == val:
                 return mid
 
-            elif self.heap[mid+1] == val:
+            elif self.queue[mid+1] == val:
                 return mid+1
 
-            elif self.heap[mid-1] == val:
+            elif self.queue[mid-1] == val:
                 return mid-1
 
-            if val > self.heap[mid]:
+            if val > self.queue[mid]:
                 return search(val, mid, r)
             
-            if val < self.heap[mid]:
+            if val < self.queue[mid]:
                 return search(val, l, mid)
 
         return search(val, l, r)
@@ -116,24 +121,24 @@ class sortedHeap(object):
 
         if self.__max:
             while i < len(self.h1) and j < len(h2):
-                if self.heap[i] > h2[j]:
-                    newArr.append( self.heap[i] )
+                if self.queue[i] > h2[j]:
+                    newArr.append( self.queue[i] )
                     i += 1
                 else:
                     newArr.append( h2[j] )
                     j += 1
         
         else:
-            while i < len(self.heap) and j < len(h2):
-                if self.heap[i] < h2[j]:
-                    newArr.append( self.heap[i] )
+            while i < len(self.queue) and j < len(h2):
+                if self.queue[i] < h2[j]:
+                    newArr.append( self.queue[i] )
                     i += 1
                 else:
                     newArr.append( h2[j] )
                     j += 1
 
-        while i < len(self.heap):
-            newArr.append( self.heap[i] )
+        while i < len(self.queue):
+            newArr.append( self.queue[i] )
             i += 1
         
         while j < len(h2):
@@ -145,41 +150,43 @@ class sortedHeap(object):
 
     def push(self, val: any) -> None:
         '''Appends a new element to the heap'''
-        if not self.heap:
-            self.heap.append(val)
+        if not self.queue:
+            self.queue.append(val)
             return
 
-        if type(self.heap[0]) != type(val):
-            raise TypeError( "Expected an element of type {type(self.heap[0])}, instead got {type(val)}" )
+        if type(self.queue[0]) != type(val):
+            raise TypeError( "Expected an element of type {type(self.queue[0])}, instead got {type(val)}" )
 
-        for i in range( self.heap.__len__() ):
-            if self.heap[i] > val:
-                self.heap.insert(i, val)
+        for i in range( self.queue.__len__() ):
+            if self.queue[i] > val:
+                self.queue.insert(i, val)
                 break
         return
 
 
     def pop(self) -> any:
-        __return = self.heap[0]
-        del self.heap[0]
+        __return = self.queue[0]
+        del self.queue[0]
 
         return __return
 
 
     def merge(self, heap: 'sortedHeap') -> 'sortedHeap':
         if type(heap) != sortedHeap:
-            return TypeError( f"Cannot merge Heap with {type(heap)}" )
+            raise TypeError( f"Cannot merge Heap with {type(heap)}" )
 
-        if type(self.heap[0]) != type(heap.heap[0]):
-            return TypeError( f"Expected heaps of same element's type" )
+        if type(self.queue[0]) != type(heap.queue[0]):
+            raise TypeError( f"Expected heaps of same element's type" )
 
         if self.__max != heap.__max:
-            self.heap = self.__merge(heap.heap[::-1])
+            self.queue = self.__merge(heap.queue[::-1])
             return self
 
-        self.heap = self.__merge(heap.heap)
+        self.queue = self.__merge(heap.queue)
         return self
 
 
-    def find(self, val: any) -> None:
+    def find(self, val: str | int) -> None:
+        if type(val) != int and type(val) != str:
+            raise TypeError( "Expected the value to be either string or integer" )
         return self.__binSearch(val)
