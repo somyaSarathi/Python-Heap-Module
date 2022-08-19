@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-class sortedHeap(object):
+class Heap(object):
     def __init__(self, val: list = list(), __max: bool = False) -> list:
         # error check
         if type(__max) != bool:
@@ -34,14 +34,14 @@ class sortedHeap(object):
         return
 
 
-    def __add__(self, val: list | 'sortedHeap') -> 'sortedHeap':
-        if type(val) == sortedHeap:
+    def __add__(self, val: list | 'Heap') -> 'Heap':
+        if type(val) == Heap:
             return self.merge(val)
         
         if type(val[0]) != type(self.queue[0]):
             return TypeError( "Expected a list of list of {type(self.queue[0])}")
 
-        val = sortedHeap(val, self.__max)
+        val = Heap(val, self.__max)
         return self.merge(val)
 
     
@@ -171,8 +171,8 @@ class sortedHeap(object):
         return __return
 
 
-    def merge(self, heap: 'sortedHeap') -> 'sortedHeap':
-        if type(heap) != sortedHeap:
+    def merge(self, heap: 'Heap') -> 'Heap':
+        if type(heap) != Heap:
             raise TypeError( f"Cannot merge Heap with {type(heap)}" )
 
         if type(self.queue[0]) != type(heap.queue[0]):
