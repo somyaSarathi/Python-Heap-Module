@@ -4,10 +4,10 @@ class Heap(object):
     def __init__(self, val: list = list(), __max: bool = False) -> list:
         # error check
         if type(__max) != bool:
-            return TypeError( f"Expected an boolean argument, instead got {type(__max)}")
+            return TypeError( f"Expected an boolean argument, instead got { type(__max) }")
 
         if type(val) != list:
-            return TypeError( f"Expected an list argument, instead got {type(val)}")
+            return TypeError( f"Expected a list, instead got { type(val) }")
 
         if not val:
             self.queue = list()
@@ -39,7 +39,7 @@ class Heap(object):
             return self.merge(val)
         
         if type(val[0]) != type(self.queue[0]):
-            return TypeError( "Expected a list of list of {type(self.queue[0])}")
+            return TypeError( "Expected a list of list of { type( self.queue[0] ) }")
 
         val = Heap(val, self.__max)
         return self.merge(val)
@@ -155,7 +155,7 @@ class Heap(object):
             return
 
         if type(self.queue[0]) != type(val):
-            raise TypeError( "Expected an element of type {type(self.queue[0])}, instead got {type(val)}" )
+            raise TypeError( "Expected an element of type { type(self.queue[0]) }, instead got { type(val) }" )
 
         for i in range( self.queue.__len__() ):
             if self.queue[i] > val:
@@ -173,7 +173,7 @@ class Heap(object):
 
     def merge(self, heap: 'Heap') -> 'Heap':
         if type(heap) != Heap:
-            raise TypeError( f"Cannot merge Heap with {type(heap)}" )
+            raise TypeError( f"Cannot merge Heap with { type(heap) }" )
 
         if type(self.queue[0]) != type(heap.queue[0]):
             raise TypeError( f"Expected heaps of same element's type" )
@@ -187,6 +187,21 @@ class Heap(object):
 
 
     def find(self, val: str | int) -> None:
-        if type(val) != int and type(val) != str:
-            raise TypeError( "Expected the value to be either string or integer" )
+        if type(val) != type( self.heap[0] ):
+            raise TypeError( f'Expected a { type( self.heap[0] ) } instead got { type(val) }')
         return self.__binSearch(val)
+
+
+    def findParentValue(self, val: str | int) -> str | int:
+        # error check
+        if type(val) != type( self.heap[0] ):
+            raise TypeError( f'Expected a { type( self.heap[0] ) } instead got { type(val) }')
+        
+        if val == self.heap[0]:
+            return -1
+        
+        idx = self.find(val)
+        if idx == -1:
+            raise ValueError( f'Heap does\'t contain {val}' )
+        
+        return self.heap[ (idx-1)//2 ]
